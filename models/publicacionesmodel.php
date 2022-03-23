@@ -7,7 +7,7 @@
             parent::__construct();
         }
 
-        function getPublicaciones(){
+        function getPublicaciones($xcategoria){
 
             session_start();
 
@@ -40,8 +40,12 @@
                                                                                     WHERE cat.id = pu.id_categoria) as namecat,  (SELECT u.email
                                                                                                                                     FROM user as u
                                                                                                                                     WHERE u.id = pu.id_user) as usuario
-                        FROM publicacion as pu";
+                        FROM publicacion as pu
+                        WHERE pu.activa = 1";
+            if (!empty($xcategoria)){
 
+                $consulta .= " AND pu.id_categoria = $xcategoria";
+            }
          
     
                     
@@ -53,6 +57,36 @@
             return $resultado;
 
             
+        }
+
+        function getPublicacion($xid){
+
+            $bd = $this->db->conexion();
+
+            $consulta = "SELECT pu.fecha, pu.descripcion,(SELECT cat.nombre
+                                                        FROM categoria as cat
+                                                        WHERE cat.id = pu.id_categoria) as namecat,  (SELECT cat.destacada
+                                                                                                        FROM categoria as cat
+                                                                                                        WHERE cat.id = pu.id_categoria) as destacada,(SELECT u.email
+                                                                                                        FROM user as u
+                                                                                                        WHERE u.id = pu.id_user) as usuario
+                        FROM publicacion as pu
+                        WHERE pu.id = $xid";
+
+            return $resultado;
+        }
+
+        function desactivarPublicacion($xid){
+
+            $bd = $this->db->conexion();
+
+            $consulta = "UPDATE publicacion as pu
+                        SET pu.activa = 0
+            
+                        WHERE pu.id = $xid";
+
+            $sql = $bd->prepare($consulta);
+            $sql->execute();            
         }
 
     }

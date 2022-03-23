@@ -51,11 +51,11 @@ function dibujarPublicaciones(json){
             if (element.admini == 1){
 
                 let btnEliminar = document.createElement("button");
-                btnEliminar.appendChild(document.createTextNode("Eliminar"));
+                btnEliminar.appendChild(document.createTextNode("Desactivar"));
                 btnEliminar.className = "eliminar-publicacion";
                 btnEliminar.addEventListener("click", function () {
 
-                    deleteData(element.id);
+                    desactivarData(element.id);
                 
                 });
 
@@ -79,6 +79,49 @@ function dibujarPublicaciones(json){
     } else{
         console.log("tabla inexistente");
     }
+
+}
+
+function dibujarIndividual(xpubli){
+
+    const base = document.querySelector(".contenedor");
+
+    base.innerHTML = "";
+
+    var cuerpo_producto = crearDiv("producto"+xpubli.id, "cuerpo-publicacion");
+    var titulo = document.createElement("h2");
+    var descripcion = crearParrafo("Descripcion: " + xpubli.descripcion);
+    var fecha = crearParrafo("Fecha: " + xpubli.fecha);
+    var destacada = crearParrafo("Destacada: " + xpubli.destacada);
+    var categoria = crearParrafo("Categoria: " + xpubli.namecat);
+    var btnVolver = document.createElement("button");
+
+    titulo.appendChild(document.createTextNode(xpubli.nombre));
+
+    var aEtiquetas = [titulo, descripcion, fecha, categoria];
+
+    for (let i = 0; i<aEtiquetas.length; i++){
+        cuerpo_producto.appendChild(aEtiquetas[i]);
+    }
+
+
+    cuerpo_producto.appendChild(newSelect);
+    cuerpo_producto.appendChild(crearDiv("cuerpo_comentarios", "cuerpo-comentarios"));
+    getComentarios(xprod[0].id);
+
+    btnVolver.appendChild(document.createTextNode("Volver!"));
+    btnVolver.addEventListener("click", function (e){
+
+        document.getElementById("producto"+xpubli.id).remove();
+        getData(xcant*xpag-xcant, true, xactual);
+
+    });
+
+    cuerpo_producto.appendChild(btnVolver);
+
+    base.appendChild(cuerpo_producto);
+
+    
 
 }
 
@@ -137,10 +180,10 @@ function crearParrafo(contenido, clase = ""){
 
 }
 
-async function getPublicaciones(){
+async function getPublicaciones(categoria = ""){
     try{
 
-        let res = await fetch("http://localhost/webLibre/publicaciones/traerPublicaciones" , {
+        let res = await fetch("http://localhost/webLibre/publicaciones/traerPublicaciones/" + categoria , {
                                 method : 'GET',
                                 body: JSON.stringify()
                             }),
@@ -157,6 +200,46 @@ async function getPublicaciones(){
     }
 
 
+}
+
+async function verData(xid){
+    try{
+
+        let res = await fetch("http://localhost/webLibre/publicaciones/getPublicacion"  + xid, {
+                                method : 'GET',
+                                body: JSON.stringify()
+                            }),
+            json = await res.json();
+
+
+        if (!res.ok) throw { status: res.status, statusText: res.statusText } //si el resultado no es ok, se tira un status con el valor mandado en status
+        // y una propiedad de texto con el valor mandado en statusText
+
+        dibujarIndividual(json);
+
+    } catch (err){
+        console.log("Get comment: " + err);
+    }
+}
+
+async function desactivarData(xid){
+    try{
+
+        let res = await fetch("http://localhost/webLibre/publicaciones/desactivarPublicacion"  + xid, {
+                                method : 'PUT',
+                           
+                            });
+           
+
+
+        if (!res.ok) throw { status: res.status, statusText: res.statusText } //si el resultado no es ok, se tira un status con el valor mandado en status
+        // y una propiedad de texto con el valor mandado en statusText
+
+        getPublicaciones();
+
+    } catch (err){
+
+    }
 }
 
 getPublicaciones();

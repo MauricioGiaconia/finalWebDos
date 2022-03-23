@@ -16,13 +16,24 @@
             
         }
 
-        function traerPublicaciones(){
+        function traerPublicaciones($categoria){
 
             header('Content-Type: application/json');
         
-            echo json_encode($this->model->getPublicaciones());   
+            echo json_encode($this->model->getPublicaciones($categoria));   
         }
 
     
+        function verPublicacion($xid){
+
+            header('Content-Type: application/json');
+        
+            echo json_encode($this->model->getPublicaciones($xid));  
+
+        }
+
+        function desactivarPublicacion($xid){
+            $this->model->deleteData($xid);
+        }
     }
 ?>
