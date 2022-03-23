@@ -1,3 +1,5 @@
+2) a- Se decidio implementar servicios WEB para el feedback al usuario y obtener la informacion de manera mas facil y rapida sin necesidad de recargar la pagina para cada consulta.
+
 3) CSR: Con el uso del client side rendering se puede obtener de forma rapida una estructura HTML armada desde JS, de esta forma el cliente puede interactuar en la pagina y segun que cosas se solicitan la pagina va a 
 	renderizar distintas cosas segun una respeusta json por parte del servidor.
 	

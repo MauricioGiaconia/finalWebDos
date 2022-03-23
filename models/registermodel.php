@@ -41,7 +41,7 @@
                 $contraHash = password_hash($aDatos['password'], PASSWORD_BCRYPT);
 
                 $sql = "INSERT INTO user(email, telefono, passw, premium, rol) 
-                        SELECT '$aDatos[email]', '$aDatos[telefono], '$contraHash', '$aDatos[premium]', 2
+                        SELECT '$aDatos[email]', '$aDatos[telefono], '$contraHash', '$aDatos[premium]', '1'
                         WHERE NOT EXISTS (SELECT email
                                         FROM user
                                         WHERE email = '$aDatos[email]')";
