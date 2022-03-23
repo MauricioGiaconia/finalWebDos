@@ -5,6 +5,27 @@ function dibujarPublicaciones(json){
     var tabla;
 
 
+
+    // Parte para busqueda por categoria mediante un select
+    var aOrden = [{"texto" : "Nuevo",
+                    "categoriaOrden" : "nuevo/ASC"},
+                
+                    {"texto" : "Usado",
+                    "categoriaOrden" : "usado/ASC"}
+                
+                ];
+    var select = dibujarSelectOrden(aOrden, "selectPublicaciones");
+
+    select.addEventListener("change", function(){
+        var aOrdenPublic = select.value;
+            aOrdenPublic = aOrdenPublic.split("/");
+
+           
+
+        getPublicaciones(aOrdenPublic[0], aOrdenPublic[1]);
+
+    });
+
     if (document.getElementById("publicaciones")){
         tabla = document.getElementById("publicaciones");
     } else{
@@ -47,8 +68,10 @@ function dibujarPublicaciones(json){
             });
 
             fila.appendChild(crearCelda(btnVer, "", true));
+
+            // Si se es administrador y el user autor de la publi NO es premium se habilita la opcion de desactivar una publicacion
     
-            if (element.admini == 1){
+            if (element.admini == 1 && element.premium == 0){
 
                 let btnEliminar = document.createElement("button");
                 btnEliminar.appendChild(document.createTextNode("Desactivar"));
@@ -125,6 +148,30 @@ function dibujarIndividual(xpubli){
 
 }
 
+function dibujarSelectOrden(xaOptions, xidSelect = ""){
+
+    var select = document.createElement("select");
+
+    if (xidSelect != ""){
+        select.setAttribute("id", xidSelect);
+    }
+    
+    for (let i = 0; i<xaOptions.length; i++){
+        select.appendChild(dibujarOption(xaOptions[i].texto, xaOptions[i].campoOrden));
+    }
+
+    return select;
+}
+
+function dibujarOption(xtexto, xvalor){
+
+    var option = document.createElement("option");
+    option.appendChild(crearParrafo(xtexto));
+    option.value = xvalor;
+
+    return option;
+}
+
 function crearDiv(id = "", clase = ""){
     let div = document.createElement("div");
 
@@ -180,10 +227,10 @@ function crearParrafo(contenido, clase = ""){
 
 }
 
-async function getPublicaciones(categoria = ""){
+async function getPublicaciones(categoria = "", orden = ""){
     try{
 
-        let res = await fetch("http://localhost/webLibre/publicaciones/traerPublicaciones/" + categoria , {
+        let res = await fetch("http://localhost/webLibre/publicaciones/traerPublicaciones/" + categoria + "/" + orden , {
                                 method : 'GET',
                                 body: JSON.stringify()
                             }),
@@ -223,6 +270,7 @@ async function verData(xid){
 }
 
 async function desactivarData(xid){
+
     try{
 
         let res = await fetch("http://localhost/webLibre/publicaciones/desactivarPublicacion"  + xid, {

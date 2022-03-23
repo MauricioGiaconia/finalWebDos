@@ -7,7 +7,7 @@
             parent::__construct();
         }
 
-        function getPublicaciones($xcategoria){
+        function getPublicaciones($xcategoria = "", $xorden = ""){
 
             session_start();
 
@@ -24,12 +24,12 @@
         
                 $resultadoRol = $bd->prepare("SELECT id
                                             FROM rol
-                                            WHERE id = " . $_SESSION['rol'] . "");
+                                            WHERE id = $_SESSION['rol']");
                 $resultadoRol->execute();
                 $rol = $resultadoRol->fetch(PDO::FETCH_OBJ);
 
                
-                //$admin = $rol->rol;
+                $admin = $rol->rol;
                
 
             } 
@@ -39,12 +39,16 @@
                                                                                     FROM categoria as cat
                                                                                     WHERE cat.id = pu.id_categoria) as namecat,  (SELECT u.email
                                                                                                                                     FROM user as u
-                                                                                                                                    WHERE u.id = pu.id_user) as usuario
+                                                                                                                                    WHERE u.id = pu.id_user) as usuario, 
+                                                                                                                                        (SELECT u.premium
+                                                                                                                                        FROM user as u
+                                                                                                                                        WHERE u.id = pu.id_user) as premium], $admin as admini
                         FROM publicacion as pu
                         WHERE pu.activa = 1";
             if (!empty($xcategoria)){
 
-                $consulta .= " AND pu.id_categoria = $xcategoria";
+                $consulta .= " AND pu.id_categoria = $xcategoria
+                                ORDER BY $xorden";
             }
          
     
@@ -87,6 +91,31 @@
 
             $sql = $bd->prepare($consulta);
             $sql->execute();            
+        }
+
+        function insertarPublicacion($aData){
+            $bd = $this->db->conexion();
+
+            session_start();
+
+            $consultaPremium = "SELECT premium
+                            FROM user
+                            WHERE id = $_SESSION[id]";
+
+            $sql = $bd->prepare($consultaPremium);
+            
+
+            $esPremium = $sql->execute(); 
+
+            $consulta = "INSERT INTO `publicacion`(`fecha`, `activa`, `descripcion`, `id_user`, `id_categoria`)
+                        VALUES (CURRENT_TIMESTAMP, 1, $aData[descripcion], $_SESSION['id'], $aData[categoria])";
+
+            if ($esPremium == 0){
+                $consulta .= " WHERE (SELECT count(*) FROM publicaciones WHERE id_user = $_SESSION[id]) < 5";
+            }        
+
+            $sql = $bd->prepare($consulta);
+            $sql->execute();       
         }
 
     }
