@@ -1,0 +1,22 @@
+3) CSR: Con el uso del client side rendering se puede obtener de forma rapida una estructura HTML armada desde JS, de esta forma el cliente puede interactuar en la pagina y segun que cosas se solicitan la pagina va a 
+	renderizar distintas cosas segun una respeusta json por parte del servidor.
+	
+   PDO: Gracias al PDO se obtiene una nueva forma de desarrollar aplicacion y permite la posibilidad de que un sistema crezca sin perder la posibilidad de modificar y extender el mismo acorde a la necesidad del cliente.
+
+4) MVC: El diseño MVC es una manera de programar en la cual se dividen las tareas de tres maneras:
+	model, view y controller. Esto sirve para organizar mejor el programa y que cada parte tenga una tarea determinada.
+	La parte de Model se encarga de todas las funciones de parte del servidor, como consultas a una base de datos, ordenar los datos etc.
+	La parte del view se encarga de la parte visual del programa, lo que al cliente se lo mostrara y de que forma.
+	La parte del controller se encarga de comunicar la parte del view con la del model, el cliente hace uso del view segun las distintas opciones/funciones que se hayan agregado, el controller interpreta lo que el cliente solicita,
+	administra esta informacion que obtiene y hace uso del model para obtener del servidor toda la informacion necesaria para mostrarla en el view. 
+
+	Ventajas: 
+	
+	* Se obtiene un codigo mas organizado y facil de leer ya que cada parte esta desacoplada de la otra.
+	* Facilita la division de trabajo entre el frontend y el backend.
+	* Facil mantenimiento.
+
+	Desventajas:	
+	* Agrega complejidad a la solucion.
+
+	El diseño MVC no se debe usar donde hay elementos que no se aplican a la tripla MVC
